@@ -14,4 +14,6 @@ module.exports = {
       },
     ],
   },
+  basePath: "/piksabe",
+  assetPrefix: "/piksabe/",
 };
