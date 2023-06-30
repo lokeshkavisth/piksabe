@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaExternalLinkAlt, FaDownload } from "react-icons/fa";
 import Masonry from "react-masonry-css";
+import Image from "next/image";
 
 const IMAGE_RESOLUTIONS = {
   small: "640",
@@ -127,207 +128,180 @@ function App() {
     fetchMedia();
   };
 
-  // const handleDownload = (imageUrl) => {
-  //   const downloadUrl = `full?resolution=${IMAGE_RESOLUTIONS[resolution]}`;
-  //   window.open(downloadUrl, "_blank");
-  // };
+  const handleDownload = (imageUrl) => {
+    // const resolution = prompt(
+    //   'Choose image resolution (e.g., "small", "medium", "large", "full")'
+    // );
+
+    const downloadUrl = `${imageUrl}?resolution=all`;
+    window.open(downloadUrl, "_blank");
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Pixabay Media Search</h1>
-      <form onSubmit={handleSearch} className="mb-4 flex items-center">
-        <div className="mr-4">
-          <label htmlFor="language" className="mr-2">
-            Language:
-          </label>
-          <select
-            id="language"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {LANGUAGE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for images or videos"
-          className="p-2 border border-gray-300 rounded-md flex-grow"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white py-2 px-4 ml-2 rounded-full"
+    <div className="mx-auto mb-10">
+      <h1 className="text-5xl font-bold my-10 text-center w-full bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
+        Piksabe Media Search
+      </h1>
+      <section className=" sticky top-0 ">
+        <form
+          onSubmit={handleSearch}
+          className="mb-4 space-y-4  max-w-screen-2xl mx-auto py-5"
         >
-          Search
-        </button>
-      </form>
+          <div className="flex items-center justify-between w-full gap-5 border rounded-full px-2 py-1 bg-gray-100 bg-opacity-20">
+            <select
+              id="language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="max-w-max bg-gray-50 hover:bg-gray-100 backdrop-blur rounded-full px-6 py-3"
+            >
+              {LANGUAGE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search for images or videos"
+              className="p-2 bg-transparent flex-grow focus-within:outline-none placeholder:text-gray-600 font-medium"
+            />
+            <button
+              type="submit"
+              className="bg-rose-500 hover:bg-rose-600 transition-colors font-semibold text-white py-3 px-10 rounded-full"
+            >
+              Search
+            </button>
+          </div>
+          <section className="flex items-center gap-5 justify-between flex-wrap w-full">
+            <div className="mb-4">
+              <select
+                id="order"
+                value={order}
+                onChange={(e) => setOrder(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                <option value="">Default</option>
+                {ORDER_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <select
+                id="image-type"
+                value={imageType}
+                onChange={(e) => setImageType(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                {IMAGE_TYPE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <select
+                id="orientation"
+                value={orientation}
+                onChange={(e) => setOrientation(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                {ORIENTATION_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <select
+                id="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                {COLOR_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <select
+                id="safe-search"
+                value={safeSearch}
+                onChange={(e) => setSafeSearch(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                {SAFE_SEARCH_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <select
+                id="page-results"
+                value={perPage}
+                onChange={(e) => setPerPage(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                {PER_PAGE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
+              >
+                {CATEGORY_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </section>
+        </form>
+      </section>
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* start */}
-
-      <section className="flex items-center gap-5 justify-between">
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="order" className="mr-2">
-            Order
-          </label>
-          <select
-            id="order"
-            value={order}
-            onChange={(e) => setOrder(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            <option value="">Default</option>
-            {ORDER_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* ///////////// */}
-
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="image-type" className="mr-2">
-            Type
-          </label>
-          <select
-            id="image-type"
-            value={imageType}
-            onChange={(e) => setImageType(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {IMAGE_TYPE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* ///////////// */}
-
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="orientation" className="mr-2">
-            Orientation
-          </label>
-          <select
-            id="orientation"
-            value={orientation}
-            onChange={(e) => setOrientation(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {ORIENTATION_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* ///////////// */}
-
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="color" className="mr-2">
-            Color
-          </label>
-          <select
-            id="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {COLOR_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* ////////////// */}
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="safe-search" className="mr-2">
-            Safe search
-          </label>
-          <select
-            id="safe-search"
-            value={safeSearch}
-            onChange={(e) => setSafeSearch(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {SAFE_SEARCH_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* ///////////// */}
-
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="page-results" className="mr-2">
-            Page results
-          </label>
-          <select
-            id="page-results"
-            value={perPage}
-            onChange={(e) => setPerPage(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {PER_PAGE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* ///////////// */}
-
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="category" className="mr-2">
-            Category
-          </label>
-          <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md w-full md:w-40"
-          >
-            {CATEGORY_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* ///////////// */}
-      </section>
-
-      {/* end  */}
       <Masonry
         breakpointCols={breakpointColumnsObj}
-        className="flex gap-4 mt-40"
+        className="flex gap-4 mt-40 max-w-7xl mx-auto"
         columnClassName="my-masonry-grid_column"
       >
         {media?.map((item, index) => (
           <div
             key={index}
-            className="border border-gray-300 rounded-md p-4 hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer mb-4 shadow-md"
-            onClick={() => window.open(item.pageURL, "_blank")}
+            className="border border-gray-300 rounded-md p-4 hover:bg-gray-100 transition duration-300 ease-in-out mb-4 shadow-md"
           >
             {item.type === "photo" || "illustration" || "vector" ? (
-              <img
+              <Image
                 src={item.largeImageURL}
                 alt={item.tags}
+                loader={() => item.largeImageURL}
+                width={100}
+                height={100}
+                quality={100}
                 className="mb-2 w-full rounded-md"
               />
             ) : (
@@ -358,7 +332,8 @@ function App() {
                   rel="noopener noreferrer"
                   className="text-blue-500 flex items-center rounded-full"
                 >
-                  <FaExternalLinkAlt className="mr-1" /> View Original Source
+                  <FaExternalLinkAlt className="mr-1" />
+                  Source
                 </a>
                 <button
                   onClick={() => handleDownload(item.largeImageURL)}
@@ -376,7 +351,7 @@ function App() {
         {loading && <p className="text-center mt-4">Loading...</p>}
         {!loading && media.length > 0 && (
           <button
-            className="bg-blue-500 text-white max-w-max py-2 px-4 mt-4 mx-auto rounded-full"
+            className="bg-rose-500 hover:bg-rose-600 transition-colors text-white max-w-max py-2 px-4 mt-4 mx-auto rounded-full"
             onClick={fetchMedia}
           >
             Load More
