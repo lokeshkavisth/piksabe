@@ -16,4 +16,10 @@ module.exports = {
   },
   basePath: "/piksabe",
   assetPrefix: "/piksabe/",
+  trailingSlash: true,
+  generateStaticParams: function () {
+    return {
+      "/": { page: "/" },
+    };
+  },
 };
