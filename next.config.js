@@ -16,6 +16,10 @@ module.exports = {
   },
   basePath: "/piksabe",
   assetPrefix: "/piksabe/",
+  generateBuildId: async () => {
+    // This is required to prevent the same build ID being used across deployments
+    return "build-" + new Date().getTime();
+  },
   trailingSlash: true,
   generateStaticParams: function () {
     return {
