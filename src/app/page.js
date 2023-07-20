@@ -4,13 +4,14 @@ import axios from "axios";
 import { FaExternalLinkAlt, FaDownload } from "react-icons/fa";
 import Masonry from "react-masonry-css";
 import Image from "next/image";
+import { saveAs } from "file-saver";
 
-const IMAGE_RESOLUTIONS = {
-  small: "640",
-  medium: "1280",
-  large: "1920",
-  full: "all",
-};
+// const IMAGE_RESOLUTIONS = {
+//   small: "640",
+//   medium: "1280",
+//   large: "1920",
+//   full: "all",
+// };
 
 const LANGUAGE_OPTIONS = [
   { value: "en", label: "English" },
@@ -128,13 +129,14 @@ function App() {
     fetchMedia();
   };
 
-  const handleDownload = (imageUrl) => {
-    // const resolution = prompt(
-    //   'Choose image resolution (e.g., "small", "medium", "large", "full")'
-    // );
+  const download = (e) => {
+    const imageUrl = e.target.value;
 
-    const downloadUrl = `${imageUrl}?resolution=all`;
-    window.open(downloadUrl, "_blank");
+    try {
+      if (imageUrl) saveAs(imageUrl, imageUrl);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -298,7 +300,6 @@ function App() {
               <Image
                 src={item.largeImageURL}
                 alt={item.tags}
-                loader={() => item.largeImageURL}
                 width={100}
                 height={100}
                 quality={100}
@@ -336,10 +337,13 @@ function App() {
                   Source
                 </a>
                 <button
-                  onClick={() => handleDownload(item.largeImageURL)}
+                  onClick={(e) => download(e)}
+                  value={item.largeImageURL}
                   className="bg-blue-500 text-white py-2 px-4 text-xs flex items-center rounded-full"
                 >
+                  {/* <a href={item.largeImageURL} download className=""> */}
                   <FaDownload className="mr-1" /> Download
+                  {/* </a> */}
                 </button>
               </div>
             </div>

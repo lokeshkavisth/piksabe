@@ -5,11 +5,11 @@ module.exports = {
   nextConfig,
   images: {
     formats: ["image/avif", "image/webp"],
+    domains: ["pixabay.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "pixabay.com",
-        port: "",
         pathname: "./src/assets/**",
       },
     ],
