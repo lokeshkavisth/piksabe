@@ -102,6 +102,3 @@ The project is licensed under the [MIT License](LICENSE).
 
 Feel free to contact me if you have any questions or suggestions for the project.
 
-```
-
-```
