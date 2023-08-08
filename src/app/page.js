@@ -5,6 +5,7 @@ import { FaExternalLinkAlt, FaDownload } from "react-icons/fa";
 import Masonry from "react-masonry-css";
 import Image from "next/image";
 import { saveAs } from "file-saver";
+import DropDown from "@/components/ui/DropDown";
 
 // const IMAGE_RESOLUTIONS = {
 //   small: "640",
@@ -140,21 +141,23 @@ function App() {
   };
 
   return (
-    <div className="mx-auto mb-10">
+    <div className="mx-auto mb-10 p-2">
       <h1 className="text-5xl font-bold my-10 text-center w-full bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
         Piksabe Media Search
       </h1>
-      <section className=" sticky top-0 ">
+      <section className=" md:sticky top-0 ">
         <form
           onSubmit={handleSearch}
           className="mb-4 space-y-4  max-w-screen-2xl mx-auto py-5"
         >
-          <div className="flex items-center justify-between w-full gap-5 border rounded-full px-2 py-1 bg-gray-100 bg-opacity-20">
+          <div className="flex items-center justify-between w-full gap-5 border rounded-full px-2 py-1 bg-gray-100 bg-opacity-20 relative">
             <select
               id="language"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="max-w-max bg-gray-50 hover:bg-gray-100 backdrop-blur rounded-full px-6 py-3"
+              className="max-w-max bg-gray-50 hover:bg-gray-100 backdrop-blur rounded-full 
+              py-1 px-2 text-sm
+              "
             >
               {LANGUAGE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -167,120 +170,66 @@ function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for images or videos"
-              className="p-2 bg-transparent flex-grow focus-within:outline-none placeholder:text-gray-600 font-medium"
+              className="p-2 bg-transparent flex-grow focus-within:outline-none placeholder:text-gray-400 overflow-hidden"
             />
             <button
               type="submit"
-              className="bg-rose-500 hover:bg-rose-600 transition-colors font-semibold text-white py-3 px-10 rounded-full"
+              className="bg-rose-500 hover:bg-rose-600 transition-colors font-semibold text-white py-3 px-10 rounded-full absolute -bottom-[340px] w-full md:static md:max-w-max"
             >
               Search
             </button>
           </div>
-          <section className="flex items-center gap-5 justify-between flex-wrap w-full">
-            <div className="mb-4">
-              <select
-                id="order"
+          <section>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-4 max-h-56 overflow-y-scroll sm:max-h-max mb-36">
+              <DropDown
+                id={"order"}
+                default={true}
                 value={order}
                 onChange={(e) => setOrder(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                <option value="">Default</option>
-                {ORDER_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                options={ORDER_OPTIONS}
+              />
 
-            <div className="mb-4">
-              <select
-                id="image-type"
+              <DropDown
+                id={"image-type"}
                 value={imageType}
                 onChange={(e) => setImageType(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                {IMAGE_TYPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                options={IMAGE_TYPE_OPTIONS}
+              />
 
-            <div className="mb-4">
-              <select
-                id="orientation"
+              <DropDown
+                id={"orientation"}
                 value={orientation}
                 onChange={(e) => setOrientation(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                {ORIENTATION_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                options={ORIENTATION_OPTIONS}
+              />
 
-            <div className="mb-4">
-              <select
-                id="color"
+              <DropDown
+                id={"color"}
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                {COLOR_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <select
-                id="safe-search"
+                options={COLOR_OPTIONS}
+              />
+              <DropDown
+                id={"safe-search"}
                 value={safeSearch}
                 onChange={(e) => setSafeSearch(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                {SAFE_SEARCH_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                options={SAFE_SEARCH_OPTIONS}
+              />
 
-            <div className="mb-4">
-              <select
-                id="page-results"
+              <DropDown
+                id={"per-page"}
                 value={perPage}
                 onChange={(e) => setPerPage(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                {PER_PAGE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                options={PER_PAGE_OPTIONS}
+              />
 
-            <div className="mb-4">
-              <select
-                id="category"
+              <DropDown
+                id={"category"}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="border rounded-full px-4 py-2 w-48 bg-gray-200 bg-opacity-20 backdrop-blur"
-              >
-                {CATEGORY_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                options={CATEGORY_OPTIONS}
+              />
+            </ul>
           </section>
         </form>
       </section>
@@ -288,7 +237,7 @@ function App() {
 
       <Masonry
         breakpointCols={breakpointColumnsObj}
-        className="flex gap-4 mt-40 max-w-7xl mx-auto"
+        className="flex gap-4 max-w-7xl mx-auto"
         columnClassName="my-masonry-grid_column"
       >
         {media?.map((item, index) => (
@@ -341,9 +290,7 @@ function App() {
                   value={item.largeImageURL}
                   className="bg-blue-500 text-white py-2 px-4 text-xs flex items-center rounded-full"
                 >
-                  {/* <a href={item.largeImageURL} download className=""> */}
                   <FaDownload className="mr-1" /> Download
-                  {/* </a> */}
                 </button>
               </div>
             </div>
