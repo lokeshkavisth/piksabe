@@ -17,7 +17,7 @@ const MediaGrid = ({ items, onItemClick, onDownload }) => {
         <div className="max-w-lg">
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No results found</h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Try adjusting your search or filter criteria to find what you're looking for.
+            Try adjusting your search or filter criteria to find what you&apos;re looking for.
           </p>
         </div>
       </div>

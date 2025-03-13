@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-module.exports = {
-  nextConfig,
+const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     domains: ["pixabay.com"],
@@ -18,3 +15,5 @@ module.exports = {
     NEXT_PUBLIC_PIKSABE_API_KEY: process.env.NEXT_PUBLIC_PIKSABE_API_KEY,
   },
 };
+
+module.exports = nextConfig;
