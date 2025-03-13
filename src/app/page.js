@@ -1,316 +1,239 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { FaExternalLinkAlt, FaDownload } from "react-icons/fa";
-import Masonry from "react-masonry-css";
-import Image from "next/image";
-import { saveAs } from "file-saver";
-import DropDown from "@/components/ui/DropDown";
 
-// const IMAGE_RESOLUTIONS = {
-//   small: "640",
-//   medium: "1280",
-//   large: "1920",
-//   full: "all",
-// };
+import MediaGrid from "@/components/media/MediaGrid";
+import MediaModal from "@/components/media/MediaModal";
+import FilterSection from "@/components/search/FilterSection";
+import SearchBar from "@/components/search/SearchBar";
+import usePixabayApi from "@/hooks/usePixabayApi";
+import {
+  CATEGORY_OPTIONS,
+  COLOR_OPTIONS,
+  DEFAULT_FILTERS,
+  IMAGE_TYPE_OPTIONS,
+  LANGUAGE_OPTIONS,
+  ORDER_OPTIONS,
+  ORIENTATION_OPTIONS,
+  PER_PAGE_OPTIONS,
+  SAFE_SEARCH_OPTIONS,
+} from "@/utils/constants";
+import { downloadImage } from "@/utils/helpers";
+import { useCallback, useEffect, useState } from "react";
 
-const LANGUAGE_OPTIONS = [
-  { value: "en", label: "English" },
-  { value: "es", label: "Spanish" },
-  { value: "fr", label: "French" },
-  { value: "de", label: "German" },
-  // Add more language options as needed
-];
+export default function Home() {
+  // State for search and filters
+  const [searchParams, setSearchParams] = useState({
+    q: "",
+    lang: DEFAULT_FILTERS.language,
+    order: DEFAULT_FILTERS.order,
+    image_type: DEFAULT_FILTERS.imageType,
+    orientation: DEFAULT_FILTERS.orientation,
+    category: DEFAULT_FILTERS.category,
+    colors: DEFAULT_FILTERS.color,
+    safesearch: DEFAULT_FILTERS.safeSearch,
+    per_page: DEFAULT_FILTERS.perPage,
+  });
 
-const ORDER_OPTIONS = [
-  { value: "popular", label: "Popular" },
-  { value: "latest", label: "Latest" },
-];
+  // State for selected media item
+  const [selectedItem, setSelectedItem] = useState(null);
 
-const IMAGE_TYPE_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "photo", label: "Photos" },
-  { value: "illustration", label: "Illustrations" },
-  { value: "vector", label: "Vectors" },
-];
+  // Custom hook for API operations
+  const { media, loading, error, hasMore, totalHits, searchMedia, loadMore } =
+    usePixabayApi();
 
-const ORIENTATION_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "horizontal", label: "Horizontal" },
-  { value: "vertical", label: "Vertical" },
-];
-
-const CATEGORY_OPTIONS = [
-  { value: "", label: "All" },
-  { value: "backgrounds", label: "Backgrounds" },
-  { value: "fashion", label: "Fashion" },
-  { value: "nature", label: "Nature" },
-  { value: "science", label: "Science" },
-  // Add more category options as needed
-];
-
-const COLOR_OPTIONS = [
-  { value: "", label: "All" },
-  { value: "grayscale", label: "Grayscale" },
-  { value: "transparent", label: "Transparent" },
-  { value: "red", label: "Red" },
-  { value: "orange", label: "Orange" },
-  // Add more color options as needed
-];
-
-const SAFE_SEARCH_OPTIONS = [
-  { value: "true", label: "Yes" },
-  { value: "false", label: "No" },
-];
-
-const PER_PAGE_OPTIONS = [
-  { value: "20", label: "20" },
-  { value: "40", label: "40" },
-  { value: "60", label: "60" },
-  { value: "80", label: "80" },
-];
-
-const breakpointColumnsObj = {
-  default: 4,
-  1100: 3,
-  700: 2,
-  500: 1,
-};
-
-function App() {
-  const [query, setQuery] = useState("");
-  const [language, setLanguage] = useState("");
-  const [order, setOrder] = useState("");
-  const [imageType, setImageType] = useState("");
-  const [orientation, setOrientation] = useState("");
-  const [category, setCategory] = useState("");
-  const [color, setColor] = useState("");
-  const [safeSearch, setSafeSearch] = useState("");
-  const [perPage, setPerPage] = useState("");
-  const [media, setMedia] = useState([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+  // Initial search on component mount
   useEffect(() => {
-    fetchMedia();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    searchMedia(searchParams);
   }, []);
 
-  const API_KEY = process.env.NEXT_PUBLIC_PIKSABE_API_KEY;
+  // Handle search submission
+  const handleSearch = ({ query, language }) => {
+    const newParams = {
+      ...searchParams,
+      q: query,
+      lang: language || DEFAULT_FILTERS.language,
+    };
 
-  const fetchMedia = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.get(
-        `https://pixabay.com/api/?key=${API_KEY}&q=${query}&lang=${language}&order=${order}&image_type=${imageType}&orientation=${orientation}&category=${category}&colors=${color}&safesearch=${safeSearch}&per_page=${perPage}&page=${page}`
-      );
-
-      setMedia((prevMedia) => [...prevMedia, ...response.data.hits]);
-      setPage((prevPage) => prevPage + 1);
-    } catch (error) {
-      setError("Failed to fetch media");
-    }
-
-    setLoading(false);
+    setSearchParams(newParams);
+    searchMedia(newParams);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  // Handle filter changes
+  const handleFilterChange = (filterId, value) => {
+    let newParams = { ...searchParams };
 
-    if (query.trim() === "") {
-      setError("Please enter a search query");
-      return;
+    switch (filterId) {
+      case "order":
+        newParams.order = value;
+        break;
+      case "imageType":
+        newParams.image_type = value;
+        break;
+      case "orientation":
+        newParams.orientation = value;
+        break;
+      case "category":
+        newParams.category = value;
+        break;
+      case "color":
+        newParams.colors = value;
+        break;
+      case "safeSearch":
+        newParams.safesearch = value;
+        break;
+      case "perPage":
+        newParams.per_page = value;
+        break;
+      default:
+        break;
     }
 
-    setMedia([]);
-    setPage(1);
-    fetchMedia();
+    setSearchParams(newParams);
+    searchMedia(newParams);
   };
 
-  const download = (e) => {
-    const imageUrl = e.target.value;
+  // Handle media item click
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
 
-    try {
-      if (imageUrl) saveAs(imageUrl, imageUrl);
-    } catch (error) {
-      console.log(error);
+  // Handle media download
+  const handleDownload = (item) => {
+    downloadImage(item.largeImageURL, `piksabe-${item.id}.jpg`);
+  };
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setSelectedItem(null);
+  };
+
+  // Handle infinite scroll
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 500 &&
+      hasMore &&
+      !loading
+    ) {
+      loadMore(searchParams);
     }
-  };
+  }, [hasMore, loading, loadMore, searchParams]);
+
+  // Add scroll event listener
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // Prepare filters for the FilterSection component
+  const filters = [
+    {
+      id: "order",
+      label: "Sort By",
+      value: searchParams.order,
+      options: ORDER_OPTIONS,
+    },
+    {
+      id: "imageType",
+      label: "Image Type",
+      value: searchParams.image_type,
+      options: IMAGE_TYPE_OPTIONS,
+    },
+    {
+      id: "orientation",
+      label: "Orientation",
+      value: searchParams.orientation,
+      options: ORIENTATION_OPTIONS,
+    },
+    {
+      id: "category",
+      label: "Category",
+      value: searchParams.category,
+      options: CATEGORY_OPTIONS,
+    },
+    {
+      id: "color",
+      label: "Color",
+      value: searchParams.colors,
+      options: COLOR_OPTIONS,
+    },
+    {
+      id: "safeSearch",
+      label: "Safe Search",
+      value: searchParams.safesearch,
+      options: SAFE_SEARCH_OPTIONS,
+    },
+    {
+      id: "perPage",
+      label: "Results Per Page",
+      value: searchParams.per_page,
+      options: PER_PAGE_OPTIONS,
+    },
+  ];
 
   return (
-    <div className="mx-auto mb-10 p-2">
-      <h1 className="text-5xl font-bold my-10 text-center w-full bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-        Piksabe Media Search
-      </h1>
-      <section className=" md:sticky top-0 ">
-        <form
-          onSubmit={handleSearch}
-          className="mb-4 space-y-4  max-w-screen-2xl mx-auto py-5"
-        >
-          <div className="flex items-center justify-between w-full gap-5 border rounded-full px-2 py-1 bg-gray-100 bg-opacity-20 relative">
-            <select
-              id="language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="max-w-max bg-gray-50 hover:bg-gray-100 backdrop-blur rounded-full 
-              py-1 px-2 text-sm
-              "
-            >
-              {LANGUAGE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for images or videos"
-              className="p-2 bg-transparent flex-grow focus-within:outline-none placeholder:text-gray-400 overflow-hidden"
-            />
-            <button
-              type="submit"
-              className="bg-rose-500 hover:bg-rose-600 transition-colors font-semibold text-white py-3 px-10 rounded-full absolute -bottom-[340px] w-full md:static md:max-w-max"
-            >
-              Search
-            </button>
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="max-w-5xl mx-auto text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
+            Piksabe Media Search
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+            Search millions of royalty-free images, illustrations, and videos
+          </p>
+
+          <SearchBar
+            onSearch={handleSearch}
+            initialQuery={searchParams.q}
+            languages={LANGUAGE_OPTIONS}
+          />
+        </div>
+
+        <FilterSection
+          filters={filters}
+          onChange={handleFilterChange}
+          className="mb-8"
+        />
+
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-8 text-red-800 dark:text-red-300">
+            <p>{error}</p>
           </div>
-          <section>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-4 max-h-56 overflow-y-scroll sm:max-h-max mb-36">
-              <DropDown
-                id={"order"}
-                default={true}
-                value={order}
-                onChange={(e) => setOrder(e.target.value)}
-                options={ORDER_OPTIONS}
-              />
-
-              <DropDown
-                id={"image-type"}
-                value={imageType}
-                onChange={(e) => setImageType(e.target.value)}
-                options={IMAGE_TYPE_OPTIONS}
-              />
-
-              <DropDown
-                id={"orientation"}
-                value={orientation}
-                onChange={(e) => setOrientation(e.target.value)}
-                options={ORIENTATION_OPTIONS}
-              />
-
-              <DropDown
-                id={"color"}
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                options={COLOR_OPTIONS}
-              />
-              <DropDown
-                id={"safe-search"}
-                value={safeSearch}
-                onChange={(e) => setSafeSearch(e.target.value)}
-                options={SAFE_SEARCH_OPTIONS}
-              />
-
-              <DropDown
-                id={"per-page"}
-                value={perPage}
-                onChange={(e) => setPerPage(e.target.value)}
-                options={PER_PAGE_OPTIONS}
-              />
-
-              <DropDown
-                id={"category"}
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                options={CATEGORY_OPTIONS}
-              />
-            </ul>
-          </section>
-        </form>
-      </section>
-      {error && <p className="text-red-500">{error}</p>}
-
-      <Masonry
-        breakpointCols={breakpointColumnsObj}
-        className="flex gap-4 max-w-7xl mx-auto"
-        columnClassName="my-masonry-grid_column"
-      >
-        {media?.map((item, index) => (
-          <div
-            key={index}
-            className="border border-gray-300 rounded-md p-4 hover:bg-gray-100 transition duration-300 ease-in-out mb-4 shadow-md"
-          >
-            {item.type === "photo" || "illustration" || "vector" ? (
-              <Image
-                src={item.largeImageURL}
-                alt={item.tags}
-                width={100}
-                height={100}
-                quality={100}
-                className="mb-2 w-full rounded-md"
-              />
-            ) : (
-              <video
-                controls
-                src={item.videos?.medium.url}
-                className="mb-2 w-full"
-              />
-            )}
-            <div>
-              <p className="font-bold mb-2">
-                {item.type === "photo" ? "Image" : "Video"}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {item.tags.split(",").map((tag, index) => (
-                  <span
-                    key={index}
-                    className="border bg-gray-100 text-gray-700 py-1 px-2 rounded-full text-sm"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <a
-                  href={item.pageURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 flex items-center rounded-full"
-                >
-                  <FaExternalLinkAlt className="mr-1" />
-                  Source
-                </a>
-                <button
-                  onClick={(e) => download(e)}
-                  value={item.largeImageURL}
-                  className="bg-blue-500 text-white py-2 px-4 text-xs flex items-center rounded-full"
-                >
-                  <FaDownload className="mr-1" /> Download
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Masonry>
-
-      <div className="mx-auto text-center mt-3">
-        {loading && <p className="text-center mt-4">Loading...</p>}
-        {!loading && media.length > 0 && (
-          <button
-            className="bg-rose-500 hover:bg-rose-600 transition-colors text-white max-w-max py-2 px-4 mt-4 mx-auto rounded-full"
-            onClick={fetchMedia}
-          >
-            Load More
-          </button>
         )}
-      </div>
+
+        {loading && media.length === 0 ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-purple-600 rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <>
+            {totalHits > 0 && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Found {totalHits.toLocaleString()} results
+              </p>
+            )}
+
+            <MediaGrid
+              items={media}
+              onItemClick={handleItemClick}
+              onDownload={handleDownload}
+            />
+
+            {loading && media.length > 0 && (
+              <div className="flex justify-center items-center h-24 mt-8">
+                <div className="w-8 h-8 border-4 border-gray-300 border-t-purple-600 rounded-full animate-spin"></div>
+              </div>
+            )}
+          </>
+        )}
+      </main>
+
+      {selectedItem && (
+        <MediaModal
+          item={selectedItem}
+          onClose={handleCloseModal}
+          onDownload={handleDownload}
+        />
+      )}
     </div>
   );
 }
-
-export default App;

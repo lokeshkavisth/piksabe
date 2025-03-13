@@ -1,104 +1,255 @@
-<h1 align='center' style='color:hotpink'>Piksabe</h1>
+# Piksabe
 
-A Nextjs app that allows users to search for images and videos using the Pixabay API. Users can enter a search query, apply filters, and browse through the search results. They can view the media, download the images, and visit the original sources. The app uses Tailwind CSS for styling and Axios for making API requests.
+<p align="center">
+  <img src="https://via.placeholder.com/150x150.png?text=Piksabe" alt="Piksabe Logo" width="150" height="150">
+</p>
 
-![Piksabe video demo](piksabe.gif)
+<p align="center">
+  <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-13.0-black?style=flat-square&logo=next.js" alt="Next.js"></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind CSS"></a>
+  <a href="https://pixabay.com/"><img src="https://img.shields.io/badge/Powered_by-Pixabay_API-2EC66D?style=flat-square" alt="Pixabay API"></a>
+  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License"></a>
+</p>
 
-## Table of Contents
+<p align="center">
+  A modern and responsive media search application built with Next.js that allows users to discover and download high-quality images using the Pixabay API.
+</p>
 
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [How to Use](#how-to-use)
-- [How to Contribute](#how-to-contribute)
-- [License](#license)
-- [Contact](#contact)
+![Piksabe demo](piksabe.gif)
 
-## Features
+## ✨ Features
 
-- Search for images and videos based on a query
-- Apply filters to narrow down the search results
-- View images and play videos
-- Download images with various resolutions
-- Visit the original source of the media
-- Infinite scroll to load more search results
-- Responsive masonry grid layout
+- 🔍 **Powerful Search** - Find images using keywords, filters, and categories
+- 🌈 **Dark Mode** - Support for both light and dark themes
+- 🔄 **Infinite Scroll** - Seamlessly load more results as you browse
+- 🖼️ **Image Details** - View detailed information about each image
+- ⬇️ **Easy Downloads** - Download images in various resolutions with a single click
+- 📱 **Fully Responsive** - Beautiful layouts on devices of all sizes
+- ⚡ **Fast Performance** - Optimized for speed and user experience
+- 🎨 **Modern UI** - Clean and intuitive interface using Tailwind CSS
 
-## Getting Started
+## 🚀 Getting Started
 
-To get a local copy of the project up and running, follow these steps:
+### Prerequisites
+
+- Node.js 16.x or higher
+- npm or yarn
+- Git
+
+### Installation
 
 1. Clone the repository:
 
    ```bash
    git clone https://github.com/lokeshkavisth/piksabe.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
    cd piksabe
    ```
 
-3. Install the dependencies:
+2. Install dependencies:
 
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-4. Obtain an API key from Pixabay by signing up for an account at [https://pixabay.com/accounts/register/](https://pixabay.com/accounts/register/). Once you have the API key, replace `'NEXT_PUBLIC_PIKSABE_API_KEY'` in the code with your actual API key.
+3. Create a `.env.local` file in the root directory with your Pixabay API key:
 
-5. Start the development server:
+   ```
+   NEXT_PUBLIC_PIKSABE_API_KEY=your_pixabay_api_key_here
+   ```
+
+   > 📝 Don't have an API key? [Create a free Pixabay account](https://pixabay.com/accounts/register/) to get one.
+
+4. Start the development server:
 
    ```bash
-   npm dev or npm run dev
+   npm run dev
+   # or
+   yarn dev
    ```
 
-6. Open the app in your web browser at [http://localhost:3000](http://localhost:3000).
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Configuration
+## 💻 Tech Stack
 
-In the `piksabe\src\app\page.js` file, you can modify the following constants to customize the app:
+- [Next.js](https://nextjs.org/) - React framework for server-rendered applications
+- [React](https://reactjs.org/) - JavaScript library for building user interfaces
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Axios](https://axios-http.com/) - Promise based HTTP client
+- [React Icons](https://react-icons.github.io/react-icons/) - Popular icon libraries
+- [React Masonry CSS](https://www.npmjs.com/package/react-masonry-css) - CSS masonry layout implementation
+- [File Saver](https://www.npmjs.com/package/file-saver) - Client-side file saving functionality
 
-- `API_KEY`: Replace `'NEXT_PUBLIC_PIKSABE_API_KEY'` with your actual Piksabe API key.
-- `IMAGE_RESOLUTIONS`: Configure the available image resolutions for download.
-- `LANGUAGE_OPTIONS`: Add or remove language options for the search language dropdown.
-- `ORDER_OPTIONS`: Add or remove order options for the search results.
-- `IMAGE_TYPE_OPTIONS`: Add or remove image type options for filtering the search results.
-- `ORIENTATION_OPTIONS`: Add or remove orientation options for filtering the search results.
-- `CATEGORY_OPTIONS`: Add or remove category options for filtering the search results.
-- `COLOR_OPTIONS`: Add or remove color options for filtering the search results.
-- `SAFE_SEARCH_OPTIONS`: Add or remove safe search options for filtering the search results.
-- `PER_PAGE_OPTIONS`: Add or remove per page options for configuring the number of results shown per page.
+## 📖 How to Use
 
-## How to Use
+### Searching for Images
 
-1. Enter a search query in the search input field.
-2. Optionally, apply filters such as language, order, image type, orientation, category, color, and safe search.
-3. Click the "Search" button to retrieve the search results.
-4. Scroll through the search results and click on an image or video to view it.
-5. To download an image, click the "Download" button and select the desired resolution.
-6. To visit the original source of the media, click the "View Original Source" link.
+1. Enter keywords in the search bar at the top of the page
+2. Select optional filters from the filter section:
 
-## How to Contribute
+   - Language
+   - Sort by (Popular or Latest)
+   - Image Type (Photos, Illustrations, or Vectors)
+   - Orientation (Horizontal or Vertical)
+   - Category
+   - Color
+   - Safe Search options
+   - Results per page
 
-Contributions are welcome! Here's how you can contribute to the project:
+3. Click the "Search" button or press Enter to view results
 
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make the necessary modifications in your branch.
-4. Commit and push your changes to your forked repository.
-5. Submit a pull request to the main repository.
+### Viewing and Downloading Images
 
-## License
+1. Click on any image to open a modal with more details
+2. In the modal, you can:
 
-The project is licensed under the [MIT License](LICENSE).
+   - View image statistics
+   - See all tags
+   - Click "View Details" for a dedicated page with more information
+   - Visit the original source on Pixabay
+   - Download the image
 
-## Contact
+3. On the image details page, you can:
+   - See a larger preview of the image
+   - View comprehensive information about the image
+   - Download the image at full resolution
+   - Visit the original source on Pixabay
 
-- [Email:](mailto:lokeshkavisth.dev@gmail.com)
-- [GitHub:](https://github.com/lokeshkavisth)
-- [Twitter:](https://twitter.com/lokeshkavisth)
+## ⚙️ Configuration
 
-Feel free to contact me if you have any questions or suggestions for the project.
+The application is now built with a modular structure. You can customize various aspects of the application by modifying the following files:
 
+- **Constants**: Update options in `src/utils/constants.js`
+
+  - Language options
+  - Order options
+  - Image type options
+  - Orientation options
+  - Category options
+  - Color options
+  - Safe search options
+  - Per page options
+  - Default filters
+
+- **Theme**: Modify the theme settings in `tailwind.config.js` and `src/app/globals.css`
+
+- **API Interaction**: Customize API behavior in `src/hooks/usePixabayApi.js`
+
+## 🛠️ Development
+
+### Folder Structure
+
+```
+piksabe/
+├── public/              # Static assets
+├── src/                 # Source code
+│   ├── app/             # Next.js app directory
+│   │   ├── image/       # Image details page route
+│   │   └── page.js      # Home page
+│   ├── components/      # React components
+│   │   ├── common/      # Common UI components
+│   │   ├── layout/      # Layout components
+│   │   ├── media/       # Media-related components
+│   │   └── search/      # Search-related components
+│   ├── hooks/           # Custom React hooks
+│   └── utils/           # Utility functions and constants
+├── .env.local           # Environment variables (create this)
+├── next.config.js       # Next.js configuration
+├── package.json         # Project dependencies
+├── tailwind.config.js   # Tailwind CSS configuration
+└── README.md            # Project documentation
+```
+
+### Component Architecture
+
+The application follows a modular component architecture:
+
+- **Layout Components**: Header, Footer, etc.
+- **Search Components**: SearchBar, FilterSection, etc.
+- **Media Components**: MediaGrid, MediaCard, MediaModal, etc.
+- **Common Components**: ThemeToggle, etc.
+
+## 🤝 Contributing
+
+Contributions are welcome and appreciated! Here's how you can contribute:
+
+1. **Fork the Repository**: Click the Fork button at the top right of this page.
+
+2. **Clone Your Fork**:
+
+   ```bash
+   git clone https://github.com/your-username/piksabe.git
+   cd piksabe
+   ```
+
+3. **Create a Branch**:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+4. **Make Your Changes**: Implement your feature or bug fix.
+
+5. **Test Your Changes**: Ensure your changes don't break any existing functionality.
+
+6. **Commit Your Changes**:
+
+   ```bash
+   git commit -m "Add feature: your feature description"
+   ```
+
+7. **Push to GitHub**:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+8. **Create a Pull Request**: Open a PR from your fork to the main repository.
+
+### Contribution Guidelines
+
+- Follow the existing code style and naming conventions
+- Write clear, descriptive commit messages
+- Update documentation for any new features
+- Add comments for complex logic
+- Ensure your code is properly tested
+
+## 🔮 Roadmap
+
+- [ ] Add video search and preview functionality
+- [ ] Implement user accounts for saving favorite images
+- [ ] Add collections/boards for organizing saved media
+- [ ] Integrate additional media APIs
+- [ ] Add more filter options
+- [ ] Implement advanced search features
+
+## ❓ Troubleshooting
+
+### Common Issues
+
+- **API Key Issues**: Ensure your Pixabay API key is correct and properly set in the .env.local file.
+- **Image Loading Problems**: Check your internet connection and browser console for errors.
+- **Styling Issues**: Make sure you're using the latest version of Tailwind CSS.
+
+If you encounter any other problems, please [open an issue](https://github.com/lokeshkavisth/piksabe/issues).
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## 👨‍💻 Author
+
+**Lokesh Kavisth**
+
+- Website: [Portfolio](https://lokeshkavisth.dev)
+- GitHub: [@lokeshkavisth](https://github.com/lokeshkavisth)
+- Twitter: [@lokeshkavisth](https://twitter.com/lokeshkavisth)
+- Email: [lokeshkavisth.dev@gmail.com](mailto:lokeshkavisth.dev@gmail.com)
+
+## 🙏 Acknowledgements
+
+- [Pixabay](https://pixabay.com/) for providing the API
+- [Next.js](https://nextjs.org/) team for the amazing framework
+- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
+- All the contributors and supporters of this project
